@@ -11,7 +11,18 @@ TBD
 Description
 --
 
-TBD
+```
+Score:
+
+commonsLangStringEscapeUtils:  6 wallclock secs ( 5.82 usr +  0.11 sys =  5.93 CPU) @ 16864.20/s (n=100000)
+microHTMLEscaper:  1 wallclock secs ( 1.15 usr +  0.01 sys =  1.16 CPU) @ 86195.30/s (n=100000)
+
+Comparison chart:
+
+                                   Rate  commonsLangStringEscapeUtils  microHTMLEscaper
+  commonsLangStringEscapeUtils  16864/s                            --              -80%
+              microHTMLEscaper  86195/s                          411%                --
+```
 
 Author
 --

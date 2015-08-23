@@ -5,9 +5,10 @@ package net.moznion.micro.escape;
  */
 public class HTMLEscaper {
     /**
-     * 
-     * @param rawString
-     * @return
+     * Escape string for HTML.
+     *
+     * @param rawString raw string.
+     * @return escaped string.
      */
     public static String escape(String rawString) {
         final StringBuilder sb = new StringBuilder();
