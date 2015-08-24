@@ -10,13 +10,13 @@ public class HTMLEscaperTest {
         assertEquals("&lt;^o^&gt;", HTMLEscaper.escape("<^o^>"));
         assertEquals("&#39;&quot;", HTMLEscaper.escape("'\""));
         assertEquals("\0&gt;", HTMLEscaper.escape("\0>"));
-        assertEquals("&#96;", HTMLEscaper.escape("`"));
-        assertEquals("&#123;&#125;", HTMLEscaper.escape("{}"));
+        assertEquals("&#96;~", HTMLEscaper.escape("`~"));
+        assertEquals("aあaあaあ&#123;&#125;aあaあaあ", HTMLEscaper.escape("aあaあaあ{}aあaあaあ"));
     }
 
     @Test
     public void forNull() {
-        assertEquals("", HTMLEscaper.escape(null));
+        assertEquals(null, HTMLEscaper.escape(null));
     }
 }
 
