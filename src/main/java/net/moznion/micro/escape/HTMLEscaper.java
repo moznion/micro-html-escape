@@ -7,12 +7,15 @@ public class HTMLEscaper {
     /**
      * Escape string for HTML.
      *
-     * @param rawString raw string.
+     * @param rawString raw string. If you give null, this method returns empty string.
      * @return escaped string.
      */
-    public static String escape(String rawString) {
-        final StringBuilder sb = new StringBuilder();
+    public static String escape(final String rawString) {
+        if (rawString == null) {
+            return "";
+        }
 
+        final StringBuilder sb = new StringBuilder();
         for (char c : rawString.toCharArray()) {
             switch (c) {
                 case '&':

@@ -13,5 +13,10 @@ public class HTMLEscaperTest {
         assertEquals("&#96;", HTMLEscaper.escape("`"));
         assertEquals("&#123;&#125;", HTMLEscaper.escape("{}"));
     }
+
+    @Test
+    public void forNull() {
+        assertEquals("", HTMLEscaper.escape(null));
+    }
 }
 
