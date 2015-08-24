@@ -13,9 +13,7 @@ public class HTMLEscaper {
     public static String escape(String rawString) {
         final StringBuilder sb = new StringBuilder();
 
-        final int len = rawString.length();
-        for (int i = 0; i < len; i++) {
-            final char c = rawString.charAt(i);
+        for (char c : rawString.toCharArray()) {
             switch (c) {
                 case '&':
                     sb.append("&amp;");
