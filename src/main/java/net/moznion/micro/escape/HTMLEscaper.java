@@ -15,7 +15,9 @@ public class HTMLEscaper {
             return "";
         }
 
-        final StringBuilder sb = new StringBuilder();
+        // 6 (== "&quot;".length()) is a magic coefficient for performance!
+        final StringBuilder sb = new StringBuilder(rawString.length() * 6);
+
         for (char c : rawString.toCharArray()) {
             switch (c) {
                 case '&':
