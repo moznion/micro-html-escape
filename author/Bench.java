@@ -1,4 +1,5 @@
 import me.geso.nanobench.Benchmark;
+import com.google.common.html.HtmlEscapers;
 import org.apache.commons.lang3.StringEscapeUtils;
 import net.moznion.micro.escape.HTMLEscaper;
 
@@ -27,6 +28,11 @@ public class Bench {
         @Benchmark.Bench
         public void microHTMLEscaper() {
             HTMLEscaper.escape(target);
+        }
+
+        @Benchmark.Bench
+        public void guavaHtmlEscapers() {
+            HtmlEscapers.htmlEscaper().escape(target);
         }
     }
 }

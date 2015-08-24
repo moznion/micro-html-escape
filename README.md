@@ -25,22 +25,24 @@ This is a Java port of [HTML::Escape](https://metacpan.org/pod/HTML::Escape).
 Benchmark
 --
 
-Comparison between this library (version:0.0.1) and [StringEscapeUtils (Apache Commons Lang, version:3.4)](https://commons.apache.org/proper/commons-lang/javadocs/api-3.4/org/apache/commons/lang3/StringEscapeUtils.html):
+Comparison of this library (version:0.0.1), [StringEscapeUtils (Apache Commons Lang, version:3.4)](https://commons.apache.org/proper/commons-lang/javadocs/api-3.4/org/apache/commons/lang3/StringEscapeUtils.html) and [HtmlEscapers (guava, version:18.0)](http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/html/HtmlEscapers.html):
 
 ```
 Score:
 
-commonsLangStringEscapeUtils:  6 wallclock secs ( 5.82 usr +  0.11 sys =  5.93 CPU) @ 16864.20/s (n=100000)
-microHTMLEscaper:  1 wallclock secs ( 1.15 usr +  0.01 sys =  1.16 CPU) @ 86195.30/s (n=100000)
+guavaHtmlEscapers:  1 wallclock secs ( 1.62 usr +  0.09 sys =  1.71 CPU) @ 58568.96/s (n=100000)
+commonsLangStringEscapeUtils:  4 wallclock secs ( 4.91 usr +  0.02 sys =  4.93 CPU) @ 20296.85/s (n=100000)
+microHTMLEscaper:  1 wallclock secs ( 1.18 usr +  0.01 sys =  1.19 CPU) @ 84111.50/s (n=100000)
 
 Comparison chart:
 
-                                   Rate  commonsLangStringEscapeUtils  microHTMLEscaper
-  commonsLangStringEscapeUtils  16864/s                            --              -80%
-              microHTMLEscaper  86195/s                          411%                --
+                                   Rate  guavaHtmlEscapers  commonsLangStringEscapeUtils  microHTMLEscaper
+             guavaHtmlEscapers  58569/s                 --                          189%              -30%
+  commonsLangStringEscapeUtils  20297/s               -65%                            --              -76%
+              microHTMLEscaper  84112/s                44%                          314%                --
 ```
 
-This library gets faster about 400% than StringEscapeUtils.
+This library gets faster about 400% than commons lang's StringEscapeUtils, about 40% than guava's HtmlEscapers.
 
 A code of benchmarking is [here](https://github.com/moznion/micro-html-escape/blob/master/author/Bench.java).
 
