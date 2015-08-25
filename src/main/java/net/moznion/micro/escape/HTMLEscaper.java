@@ -50,19 +50,46 @@ public class HTMLEscaper {
 
         final int length = rawString.length();
 
+        char c;
+        for (int i = 0; i < length; i++) {
+            c = rawString.charAt(i);
+            if (c <= replacementMax) {
+                char[] replacedCharacters = replacements[c];
+                if (replacedCharacters != null) {
+                    // Replacement target character exists, invoke replacing logic!
+                    return _escape(rawString, length, i);
+                }
+            }
+        }
+
+        // No replacement target characters. Return raw argument.
+        return rawString;
+    }
+
+    private static String _escape(String str, int strlen, int cursor) {
         // 6 (== "&quot;".length()) is a magic coefficient for maximum length.
-        final char[] buf = new char[length * 6];
+        final char[] buf = new char[strlen * 6];
 
         int cnt = 0;
-        for (char c : rawString.toCharArray()) {
-            if (c > replacementMax) { // when index out of bounds, append raw character
+
+        // pack already read string into buffer
+        for (char c : str.substring(0, cursor).toCharArray()) {
+            buf[cnt] = c;
+            cnt++;
+        }
+
+        char c;
+        for (int i = cursor; i < strlen; i++) {
+            c = str.charAt(i);
+
+            if (c > replacementMax) { // When index out of bounds, append raw character
                 buf[cnt] = c;
                 cnt++;
                 continue;
             }
 
             char[] replacedCharacters = replacements[c];
-            if (replacedCharacters != null) { // append replaced
+            if (replacedCharacters != null) { // Append replaced
                 for (char replaced : replacedCharacters) {
                     buf[cnt] = replaced;
                     cnt++;
@@ -70,7 +97,7 @@ public class HTMLEscaper {
                 continue;
             }
 
-            // append raw character
+            // Append raw character
             buf[cnt] = c;
             cnt++;
         }
