@@ -19,7 +19,13 @@ public class HTMLEscaper {
         replaceMap.put('<', "&lt;");
         replaceMap.put('"', "&quot;");
         replaceMap.put('\'', "&#39;");
+
+        // For IE. IE interprets back-quote as valid quoting characters
+        // ref: https://rt.cpan.org/Public/Bug/Display.html?id=84971
         replaceMap.put('`', "&#96;");
+
+        // For javascript templates (e.g. AngularJS and such javascript frameworks)
+        // ref: https://github.com/angular/angular.js/issues/5601
         replaceMap.put('{', "&#123;");
         replaceMap.put('}', "&#125;");
 

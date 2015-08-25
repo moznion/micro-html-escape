@@ -18,7 +18,13 @@ Description
 --
 
 micro-html-escape is a lightweight (it has no dependencies and fast) HTML escaper.
-This library __only__ escapes special characters of HTML.
+This library provides HTML escaping function (not provides unescaping one).
+
+This supports following features:
+
+- Escape HTML special characters (`&<>"'`)
+- Escape `{` and `}` characters for some JavaScript templates (e.g. AngularJS and such JavaScript framework)
+- Escape `\`` character for Internet Explorer
 
 This is a Java port of [HTML::Escape](https://metacpan.org/pod/HTML::Escape).
 
