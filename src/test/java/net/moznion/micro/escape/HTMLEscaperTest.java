@@ -9,9 +9,9 @@ public class HTMLEscaperTest {
     public void test() {
         assertEquals("&lt;^o^&gt;", HTMLEscaper.escape("<^o^>"));
         assertEquals("&#39;&quot;", HTMLEscaper.escape("'\""));
-        assertEquals("\0&gt;", HTMLEscaper.escape("\0>"));
+        assertEquals("~\0&gt;", HTMLEscaper.escape("~\0>"));
         assertEquals("&#96;~", HTMLEscaper.escape("`~"));
-        assertEquals("aあaあaあ&#123;&#125;aあaあaあ", HTMLEscaper.escape("aあaあaあ{}aあaあaあ"));
+        assertEquals("aあaあaあ&#123;aあaあaあ&#125;aあaあaあ", HTMLEscaper.escape("aあaあaあ{aあaあaあ}aあaあaあ"));
     }
 
     @Test
