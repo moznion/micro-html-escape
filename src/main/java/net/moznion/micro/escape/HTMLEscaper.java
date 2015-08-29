@@ -50,14 +50,13 @@ public class HTMLEscaper {
             return null;
         }
 
-        final char[] rawChars = rawString.toCharArray();
-        final int length = rawChars.length;
+        final int length = rawString.length();
 
         char c;
         for (int i = 0; i < length; i++) {
-            c = rawChars[i];
+            c = rawString.charAt(i);
             if (c <= replacementMax && replacements[c] != null) {
-                return _escape(rawChars, length, i);
+                return _escape(rawString, length, i);
             }
         }
 
@@ -65,25 +64,25 @@ public class HTMLEscaper {
         return rawString;
     }
 
-    private static String _escape(final char[] chars, final int strlen, int cursor) {
+    private static String _escape(final String rawString, final int length, int cursor) {
         final char[][] replacements = REPLACEMENTS;
         final char replacementMax = REPLACEMENT_MAX;
 
         // 6 (== "&quot;".length()) is a magic coefficient for maximum length.
-        final char[] buf = new char[strlen * 6];
+        final char[] buf = new char[length + 100];
 
         int beginCursor = 0;
         int bufIndex = 0;
 
         char c;
         char[] replacedCharacters;
-        for (; cursor < strlen; cursor++) {
-            c = chars[cursor];
+        for (; cursor < length; cursor++) {
+            c = rawString.charAt(cursor);
             if (c <= replacementMax && (replacedCharacters = replacements[c]) != null) {
                 final int lenOfReplaced = replacedCharacters.length;
                 final int lenOfCopied = cursor - beginCursor;
 
-                System.arraycopy(chars, beginCursor, buf, bufIndex, lenOfCopied);
+                rawString.getChars(beginCursor, cursor, buf, bufIndex);
 
                 bufIndex += lenOfCopied;
                 beginCursor = cursor + 1;
@@ -94,7 +93,7 @@ public class HTMLEscaper {
         }
 
         if (beginCursor < cursor) {
-            System.arraycopy(chars, beginCursor, buf, bufIndex, cursor - beginCursor);
+            rawString.getChars(beginCursor, cursor, buf, bufIndex);
             bufIndex += (cursor - beginCursor);
         }
 
