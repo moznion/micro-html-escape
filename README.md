@@ -36,21 +36,22 @@ Comparison of this library (version:0.0.1), [StringEscapeUtils (Apache Commons-L
 ```
 Score:
 
-commonsLangStringEscapeUtils:  6 wallclock secs ( 5.42 usr +  0.12 sys =  5.54 CPU) @ 18033.18/s (n=100000)
-microHTMLEscaper:  0 wallclock secs ( 0.84 usr +  0.03 sys =  0.86 CPU) @ 115710.07/s (n=100000)
-guavaHtmlEscapers:  1 wallclock secs ( 1.11 usr +  0.02 sys =  1.13 CPU) @ 88675.52/s (n=100000)
+guavaHtmlEscapers:  0 wallclock secs ( 0.12 usr +  0.02 sys =  0.14 CPU) @ 715251.30/s (n=100000)
+commonsLangStringEscapeUtils:  1 wallclock secs ( 1.73 usr +  0.01 sys =  1.74 CPU) @ 57519.92/s (n=100000)
+microHTMLEscaper:  0 wallclock secs ( 0.11 usr +  0.01 sys =  0.12 CPU) @ 803871.44/s (n=100000)
 
 Comparison chart:
 
-                                    Rate  commonsLangStringEscapeUtils  microHTMLEscaper  guavaHtmlEscapers
-  commonsLangStringEscapeUtils   18033/s                            --              -84%               -80%
-              microHTMLEscaper  115710/s                          542%                --                30%
-             guavaHtmlEscapers   88676/s                          392%              -23%                 --
+                                    Rate  guavaHtmlEscapers  commonsLangStringEscapeUtils  microHTMLEscaper
+             guavaHtmlEscapers  715251/s                 --                         1143%              -11%
+  commonsLangStringEscapeUtils   57520/s               -92%                            --              -93%
+              microHTMLEscaper  803871/s                12%                         1298%                --
 ```
 
-This library gets faster about 540% than commons-lang's StringEscapeUtils, about 30% than guava's HtmlEscapers.
+This library gets faster about 1300% than commons-lang's StringEscapeUtils, about 10% than guava's HtmlEscapers
+(I think performance of between this library and guava is almost the same).
 
-A code of benchmarking is [here](https://github.com/moznion/micro-html-escape/blob/master/author/Bench.java).
+A code of benchmarking is [here](https://github.com/moznion/micro-html-escape/blob/master/author/BasicBench.java).
 
 See Also
 --
