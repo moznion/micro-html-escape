@@ -52,12 +52,13 @@ public class HTMLEscaper {
 
         final int length = rawString.length();
 
-        char c;
-        for (int i = 0; i < length; i++) {
+        int i = 0;
+        for (char c : rawString.toCharArray()) {
             c = rawString.charAt(i);
             if (c <= replacementMax && replacements[c] != null) {
                 return _escape(rawString, length, i);
             }
+            i++;
         }
 
         // No replacement target characters. Return raw argument.
