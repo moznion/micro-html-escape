@@ -8,12 +8,11 @@ import java.util.Map;
  * String escaper for HTML.
  */
 public class HTMLEscaper {
-    private static final Map<Character, String> replaceMap;
-    private static final char replacements[][];
-    private static final char replacementMax;
+    private static final char[][] REPLACEMENTS;
+    private static final char REPLACEMENT_MAX;
 
     static {
-        replaceMap = new HashMap<>(8);
+        final Map<Character, String> replaceMap = new HashMap<>(8);
         replaceMap.put('&', "&amp;");
         replaceMap.put('>', "&gt;");
         replaceMap.put('<', "&lt;");
@@ -30,10 +29,10 @@ public class HTMLEscaper {
         replaceMap.put('}', "&#125;");
 
         // convert to array from map
-        replacementMax = Collections.max(replaceMap.keySet());
-        replacements = new char[replacementMax + 1][];
+        REPLACEMENT_MAX = Collections.max(replaceMap.keySet());
+        REPLACEMENTS = new char[REPLACEMENT_MAX + 1][];
         for (char c : replaceMap.keySet()) {
-            replacements[c] = replaceMap.get(c).toCharArray();
+            REPLACEMENTS[c] = replaceMap.get(c).toCharArray();
         }
     }
 
@@ -44,64 +43,79 @@ public class HTMLEscaper {
      * @return escaped string.
      */
     public static String escape(final String rawString) {
+        final char[][] replacements = REPLACEMENTS;
+        final char replacementMax = REPLACEMENT_MAX;
+
         if (rawString == null) {
             return null;
         }
 
-        final int length = rawString.length();
-
-        char c;
-        for (int i = 0; i < length; i++) {
-            c = rawString.charAt(i);
-            if (c <= replacementMax) {
-                char[] replacedCharacters = replacements[c];
-                if (replacedCharacters != null) {
-                    // Replacement target character exists, invoke replacing logic!
-                    return _escape(rawString, length, i);
-                }
+        int i = 0;
+        for (char c : rawString.toCharArray()) {
+            if (c <= replacementMax && replacements[c] != null) {
+                return _escape(rawString, i);
             }
+            i++;
         }
 
         // No replacement target characters. Return raw argument.
         return rawString;
     }
 
-    private static String _escape(String str, int strlen, int cursor) {
-        // 6 (== "&quot;".length()) is a magic coefficient for maximum length.
-        final char[] buf = new char[strlen * 6];
+    private static String _escape(final String rawString, int cursor) {
+        final char[][] replacements = REPLACEMENTS;
+        final char replacementMax = REPLACEMENT_MAX;
 
-        int cnt = 0;
+        final char[] rawChars = rawString.toCharArray();
+        final int length = rawChars.length;
 
-        // pack already read string into buffer
-        for (char c : str.substring(0, cursor).toCharArray()) {
-            buf[cnt] = c;
-            cnt++;
-        }
+        int bufsize = 1024; // XXX magic number!!
+        char[] buf = new char[bufsize];
+
+        int beginCursor = 0;
+        int bufIndex = 0;
 
         char c;
-        for (int i = cursor; i < strlen; i++) {
-            c = str.charAt(i);
+        char[] replacedCharacters;
+        char[] copybuf;
+        int sizeNeeded;
+        int lenOfReplaced;
+        int lenOfCopied;
+        for (; cursor < length; cursor++) {
+            c = rawChars[cursor];
+            if (c <= replacementMax && (replacedCharacters = replacements[c]) != null) {
+                lenOfReplaced = replacedCharacters.length;
+                lenOfCopied = cursor - beginCursor;
 
-            if (c > replacementMax) { // When index out of bounds, append raw character
-                buf[cnt] = c;
-                cnt++;
-                continue;
-            }
+                if ((sizeNeeded = bufIndex + lenOfCopied + lenOfReplaced) > bufsize) {
+                    bufsize = sizeNeeded + (length - cursor) * 4;
 
-            char[] replacedCharacters = replacements[c];
-            if (replacedCharacters != null) { // Append replaced
-                for (char replaced : replacedCharacters) {
-                    buf[cnt] = replaced;
-                    cnt++;
+                    copybuf = new char[bufsize];
+                    System.arraycopy(buf, 0, copybuf, 0, bufIndex);
+                    buf = copybuf;
                 }
-                continue;
-            }
+                System.arraycopy(rawChars, beginCursor, buf, bufIndex, lenOfCopied);
 
-            // Append raw character
-            buf[cnt] = c;
-            cnt++;
+                bufIndex += lenOfCopied;
+                beginCursor = cursor + 1;
+
+                System.arraycopy(replacedCharacters, 0, buf, bufIndex, lenOfReplaced);
+                bufIndex += lenOfReplaced;
+            }
         }
 
-        return new String(buf, 0, cnt);
+        if (beginCursor < cursor) {
+            lenOfCopied = cursor - beginCursor;
+            if ((sizeNeeded = bufIndex + lenOfCopied) > bufsize) {
+                copybuf = new char[sizeNeeded];
+                System.arraycopy(buf, 0, copybuf, 0, bufIndex);
+                buf = copybuf;
+            }
+            System.arraycopy(rawChars, beginCursor, buf, bufIndex, cursor - beginCursor);
+            bufIndex += lenOfCopied;
+        }
+
+        return new String(buf, 0, bufIndex);
     }
 }
+
