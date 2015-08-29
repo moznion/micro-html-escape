@@ -18,5 +18,18 @@ public class HTMLEscaperTest {
     public void forNull() {
         assertEquals(null, HTMLEscaper.escape(null));
     }
-}
 
+    @Test
+    public void testForBound() {
+        // XXX fragile test!
+
+        String str = "";
+        for (int i = 0; i < 1025; i++) {
+            str += "a";
+        }
+
+        final String origin = str + ">";
+        final String expected = str + "&gt;";
+        assertEquals(expected, HTMLEscaper.escape(origin));
+    }
+}

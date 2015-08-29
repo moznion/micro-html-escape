@@ -50,13 +50,10 @@ public class HTMLEscaper {
             return null;
         }
 
-        final int length = rawString.length();
-
         int i = 0;
         for (char c : rawString.toCharArray()) {
-            c = rawString.charAt(i);
             if (c <= replacementMax && replacements[c] != null) {
-                return _escape(rawString, length, i);
+                return _escape(rawString, i);
             }
             i++;
         }
@@ -65,24 +62,37 @@ public class HTMLEscaper {
         return rawString;
     }
 
-    private static String _escape(final String rawString, final int length, int cursor) {
+    private static String _escape(final String rawString, int cursor) {
         final char[][] replacements = REPLACEMENTS;
         final char replacementMax = REPLACEMENT_MAX;
 
-        // 6 (== "&quot;".length()) is a magic coefficient for maximum length.
-        final char[] buf = new char[length + 100];
+        final int length = rawString.length();
+
+        int bufsize = 1024; // XXX magic number!!
+        char[] buf = new char[bufsize];
 
         int beginCursor = 0;
         int bufIndex = 0;
 
         char c;
         char[] replacedCharacters;
+        char[] copybuf;
+        int sizeNeeded;
+        int lenOfReplaced;
+        int lenOfCopied;
         for (; cursor < length; cursor++) {
             c = rawString.charAt(cursor);
             if (c <= replacementMax && (replacedCharacters = replacements[c]) != null) {
-                final int lenOfReplaced = replacedCharacters.length;
-                final int lenOfCopied = cursor - beginCursor;
+                lenOfReplaced = replacedCharacters.length;
+                lenOfCopied = cursor - beginCursor;
 
+                if ((sizeNeeded = bufIndex + lenOfCopied + lenOfReplaced) > bufsize) {
+                    bufsize = sizeNeeded + (length - cursor) * 4;
+
+                    copybuf = new char[bufsize];
+                    System.arraycopy(buf, 0, copybuf, 0, bufIndex);
+                    buf = copybuf;
+                }
                 rawString.getChars(beginCursor, cursor, buf, bufIndex);
 
                 bufIndex += lenOfCopied;
@@ -94,10 +104,17 @@ public class HTMLEscaper {
         }
 
         if (beginCursor < cursor) {
+            lenOfCopied = cursor - beginCursor;
+            if ((sizeNeeded = bufIndex + lenOfCopied) > bufsize) {
+                copybuf = new char[sizeNeeded];
+                System.arraycopy(buf, 0, copybuf, 0, bufIndex);
+                buf = copybuf;
+            }
             rawString.getChars(beginCursor, cursor, buf, bufIndex);
-            bufIndex += (cursor - beginCursor);
+            bufIndex += lenOfCopied;
         }
 
         return new String(buf, 0, bufIndex);
     }
 }
+
