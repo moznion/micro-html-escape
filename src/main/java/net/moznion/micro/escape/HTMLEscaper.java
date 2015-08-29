@@ -66,7 +66,8 @@ public class HTMLEscaper {
         final char[][] replacements = REPLACEMENTS;
         final char replacementMax = REPLACEMENT_MAX;
 
-        final int length = rawString.length();
+        final char[] rawChars = rawString.toCharArray();
+        final int length = rawChars.length;
 
         int bufsize = 1024; // XXX magic number!!
         char[] buf = new char[bufsize];
@@ -81,7 +82,7 @@ public class HTMLEscaper {
         int lenOfReplaced;
         int lenOfCopied;
         for (; cursor < length; cursor++) {
-            c = rawString.charAt(cursor);
+            c = rawChars[cursor];
             if (c <= replacementMax && (replacedCharacters = replacements[c]) != null) {
                 lenOfReplaced = replacedCharacters.length;
                 lenOfCopied = cursor - beginCursor;
@@ -93,7 +94,7 @@ public class HTMLEscaper {
                     System.arraycopy(buf, 0, copybuf, 0, bufIndex);
                     buf = copybuf;
                 }
-                rawString.getChars(beginCursor, cursor, buf, bufIndex);
+                System.arraycopy(rawChars, beginCursor, buf, bufIndex, lenOfCopied);
 
                 bufIndex += lenOfCopied;
                 beginCursor = cursor + 1;
@@ -110,7 +111,7 @@ public class HTMLEscaper {
                 System.arraycopy(buf, 0, copybuf, 0, bufIndex);
                 buf = copybuf;
             }
-            rawString.getChars(beginCursor, cursor, buf, bufIndex);
+            System.arraycopy(rawChars, beginCursor, buf, bufIndex, cursor - beginCursor);
             bufIndex += lenOfCopied;
         }
 

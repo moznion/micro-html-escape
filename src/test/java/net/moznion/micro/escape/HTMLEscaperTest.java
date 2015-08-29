@@ -28,8 +28,8 @@ public class HTMLEscaperTest {
             str += "a";
         }
 
-        final String origin = str + ">";
-        final String expected = str + "&gt;";
+        final String origin = str + ">a";
+        final String expected = str + "&gt;a";
         assertEquals(expected, HTMLEscaper.escape(origin));
     }
 }
