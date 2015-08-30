@@ -9,7 +9,6 @@ import java.util.Map;
  */
 public class HTMLEscaper {
     private static final char[][] REPLACEMENTS;
-    private static final char REPLACEMENT_MAX;
 
     static {
         final Map<Character, String> replaceMap = new HashMap<>(8);
@@ -29,8 +28,7 @@ public class HTMLEscaper {
         replaceMap.put('}', "&#125;");
 
         // convert to array from map
-        REPLACEMENT_MAX = Collections.max(replaceMap.keySet());
-        REPLACEMENTS = new char[REPLACEMENT_MAX + 1][];
+        REPLACEMENTS = new char[Collections.max(replaceMap.keySet()) + 1][];
         for (char c : replaceMap.keySet()) {
             REPLACEMENTS[c] = replaceMap.get(c).toCharArray();
         }
@@ -44,15 +42,15 @@ public class HTMLEscaper {
      */
     public static String escape(final String rawString) {
         final char[][] replacements = REPLACEMENTS;
-        final char replacementMax = REPLACEMENT_MAX;
 
         if (rawString == null) {
             return null;
         }
 
         int i = 0;
+        int masked;
         for (char c : rawString.toCharArray()) {
-            if (c <= replacementMax && replacements[c] != null) {
+            if (c <= '}' && ((masked = c ^ 0x20) <= 0x40 || (masked & 0x19) == 0x19) && replacements[c] != null) {
                 return _escape(rawString, i);
             }
             i++;
@@ -64,7 +62,6 @@ public class HTMLEscaper {
 
     private static String _escape(final String rawString, int cursor) {
         final char[][] replacements = REPLACEMENTS;
-        final char replacementMax = REPLACEMENT_MAX;
 
         final char[] rawChars = rawString.toCharArray();
         final int length = rawChars.length;
@@ -81,9 +78,10 @@ public class HTMLEscaper {
         int sizeNeeded;
         int lenOfReplaced;
         int lenOfCopied;
+        int masked;
         for (; cursor < length; cursor++) {
             c = rawChars[cursor];
-            if (c <= replacementMax && (replacedCharacters = replacements[c]) != null) {
+            if (c <= '}' && ((masked = c ^ 0x20) <= 0x40 || (masked & 0x19) == 0x19) && (replacedCharacters = replacements[c]) != null) {
                 lenOfReplaced = replacedCharacters.length;
                 lenOfCopied = cursor - beginCursor;
 
